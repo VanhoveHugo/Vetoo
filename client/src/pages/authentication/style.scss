@@ -1,0 +1,28 @@
+.bottom {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    right: 2rem;
+}
+
+h1 {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 40px;
+    margin: 0 0 1rem;
+}
+
+.CGU {
+    display: flex;
+    
+    input {
+        margin-right: 14px;
+    }
+    label {
+        font-size: 12px;
+        flex-direction: row;
+        a {
+            margin-left: .25rem;
+        }
+    }
+}

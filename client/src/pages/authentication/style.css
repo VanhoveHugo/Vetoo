@@ -1,0 +1,27 @@
+.bottom {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  right: 2rem;
+}
+
+h1 {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 40px;
+  margin: 0 0 1rem;
+}
+
+.CGU {
+  display: flex;
+}
+.CGU input {
+  margin-right: 14px;
+}
+.CGU label {
+  font-size: 12px;
+  flex-direction: row;
+}
+.CGU label a {
+  margin-left: 0.25rem;
+}/*# sourceMappingURL=style.css.map */
