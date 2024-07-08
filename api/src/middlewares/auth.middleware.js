@@ -1,30 +1,45 @@
 const jwt = require("jsonwebtoken");
-const jwtSecret = process.env.JWT_SECRET;
 
 exports.verifyToken = (req, res, next) => {
   try {
-    let Authorization = req.headers.authorization;
+    // Extract the Authorization header from the request
+    let authorizationHeader = req.headers.authorization;
 
-    let token = Authorization.split(" ")[1];
+    // Check if Authorization header exists
+    if (!authorizationHeader) {
+      return res
+        .status(401)
+        .json({ message: "You must be logged in to access this resource." });
+    }
 
-    if (!token)
-      return res.status(401).json({
-        message: "Vous devez être connecté pour accéder à cette ressource.",
-      });
+    // Split the Authorization header to retrieve the token part
+    let token = authorizationHeader.split(" ")[1];
 
-    const payload = jwt.verify(token, jwtSecret);
+    // Check if token exists
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "You must be logged in to access this resource." });
+    }
 
-    if (!payload)
-      return res.status(401).json({
-        message: "Vous devez être connecté pour accéder à cette ressource.",
-      });
+    // Verify the JWT token
+    const payload = jwt.verify(token, process.env.JWT_SECRET || "verySecret");
 
-    req.user = payload;
+    if (!payload) {
+      return res
+        .status(401)
+        .json({ message: "You must be logged in to access this resource." });
+    }
+
+    // Move to the next middleware or route handler
     next();
   } catch (error) {
+    // Handle specific JWT errors
     if (error.message === "jwt expired") {
-      return res.status(401).json({ message: "Votre session a expiré." });
+      return res.status(401).json({ message: "Your session has expired." });
     }
-    res.status(500).json({ message: "Erreur serveur." });
+
+    // Handle other errors
+    res.status(500).json({ message: "Server error." });
   }
 };

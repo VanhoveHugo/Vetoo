@@ -1,44 +1,76 @@
-import React, { useContext, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { UserContext } from "../../../provider/user.provider";
+import { useContext } from "react";
 import { motion } from "framer-motion";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
+  faTrash,
   faVenus,
   faMars,
   faDog,
   faCat,
 } from "@fortawesome/free-solid-svg-icons";
 import { fromLeft, pageTransition } from "../../../utils/animation.manager";
-import { UserContext } from "../../../provider/user.provider";
 
-const CreatePetForm = ({ addError }) => {
+const EditPetPage = () => {
   const navigate = useNavigate();
-  const { addPet } = useContext(UserContext);
   const [selectedType, setSelectedType] = useState("");
   const [selectedGender, setSelectedGender] = useState("");
-  const [birthday, setBirthday] = useState(
-    new Date("2000-01-01").toISOString().split("T")[0]
-  );
+  const { id } = useParams();
+  const petId = Number(id);
+  const { user, deletePet, updatePet } = useContext(UserContext);
+  const [birthday, setBirthday] = useState(null);
+  let pet = null;
+
+  useEffect(() => {
+    if (pet) {
+      setSelectedType(pet.type);
+      setSelectedGender(pet.gender);
+    }
+  }, [pet]);
+
+  if (!user) {
+    return null;
+  }
+
+  if (!user.pets) {
+    navigate("/");
+    return null;
+  }
+
+  if (user.pets.length === 0) {
+    navigate("/new-pet");
+    return null;
+  }
+
+  const validId = user?.pets.map((pet) => pet.id).includes(petId);
+
+  if (!validId) {
+    navigate("/");
+    return null;
+  }
+
+  pet = user.pets.find((pet) => pet.id === petId);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const name = document.getElementById("name").value;
-    const gender = document.querySelector(
-      "input[name='gender']:checked"
-    )?.value;
     const type = document.querySelector("input[name='type']:checked").value;
+    const gender = document.querySelector("input[name='gender']:checked").value;
     const birthdate =
       birthday === new Date("2000-01-01").toISOString().split("T")[0]
         ? null
         : document.getElementById("birthdate").value;
 
-    fetch("/api/pets", {
-      method: "POST",
+    fetch(`/api/pets/${petId}`, {
+      method: "PUT",
       body: JSON.stringify({
         name,
-        gender,
         type,
+        gender,
         birthdate,
       }),
       headers: {
@@ -50,9 +82,24 @@ const CreatePetForm = ({ addError }) => {
         return res.json();
       })
       .then((data) => {
-        if (data.message) return addError(data.message);
-        addPet(data);
-        navigate("/", { replace: true });
+        updatePet(data.pet);
+        navigate(`/pet/${petId}`, { replace: true });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const handleDelete = () => {
+    fetch(`/api/pets/${petId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => {
+        deletePet(petId);
+        navigate("/");
       })
       .catch((err) => {
         console.error(err);
@@ -74,16 +121,25 @@ const CreatePetForm = ({ addError }) => {
       variants={fromLeft}
       transition={pageTransition}
     >
-      <div className="toolbar leftCTA">
-        <Link to={`/`} className="back">
+      <div className="toolbar center">
+        <Link to={`/pet/${petId}`} className="back">
           <FontAwesomeIcon icon={faChevronLeft} />
         </Link>
-        <h1>Créer un animal</h1>
+        <h1>Modification de votre animal</h1>
+        <button className="trash" onClick={handleDelete}>
+          <FontAwesomeIcon icon={faTrash} />
+        </button>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="name">
           <label htmlFor="name">Nom</label>
-          <input id="name" name="name" type="text" max={20} />
+          <input
+            id="name"
+            name="name"
+            type="text"
+            max={20}
+            defaultValue={pet.name}
+          />
         </div>
 
         <div className="type">
@@ -153,6 +209,7 @@ const CreatePetForm = ({ addError }) => {
                 id="male"
                 value="m"
                 checked={selectedGender === "m"}
+                onChange={() => setSelectedGender("m")}
               ></input>
               <label
                 htmlFor="male"
@@ -169,6 +226,7 @@ const CreatePetForm = ({ addError }) => {
                 id="female"
                 value="f"
                 checked={selectedGender === "f"}
+                onChange={() => setSelectedGender("f")}
               ></input>
               <label
                 htmlFor="female"
@@ -188,6 +246,11 @@ const CreatePetForm = ({ addError }) => {
             name="birthdate"
             id="birthdate"
             value={birthday}
+            defaultValue={
+              pet.birthdate
+                ? new Date(pet.birthdate).toISOString().split("T")[0]
+                : new Date("2000-01-01").toISOString().split("T")[0]
+            }
             onChange={(e) => setBirthday(e.target.value)}
             max={new Date().toISOString().split("T")[0]}
             min="2000-01-02"
@@ -196,7 +259,7 @@ const CreatePetForm = ({ addError }) => {
         <input
           className="button"
           type="submit"
-          value="Créer"
+          value="Sauvegarder"
           onClick={handleSubmit}
         />
       </form>
@@ -204,4 +267,4 @@ const CreatePetForm = ({ addError }) => {
   );
 };
 
-export default CreatePetForm;
+export default EditPetPage;

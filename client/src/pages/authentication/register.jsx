@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export default function Register({ addError }) {
   const handleSubmit = (e) => {
     e.preventDefault();
-    const name = document.getElementById("name").value;
+    const name = document.getElementById("username").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
@@ -39,7 +39,7 @@ export default function Register({ addError }) {
     <motion.main
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="w-full max-w-5xl"
+      className="form-center"
       exit={{ opacity: 0 }}
       transition={{
         type: "linear",
@@ -53,16 +53,42 @@ export default function Register({ addError }) {
           Inscrivez-vous dès maintenant et commencez à profiter de tous les
           avantages de notre plateforme.
         </legend>
-        <input type="text" name="name" id="name" placeholder="Username" />
-        <input type="email" name="email" id="email" placeholder="Email" />
-        <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Password"
-        />
+        <label for="username">
+          <span>Nom d'utilisateur</span>
+          <input
+            type="username"
+            name="username"
+            id="username"
+            placeholder=" "
+            pattern=".{2,}"
+            required
+          />
+        </label>
+        <label for="email">
+          <span>Email</span>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            class="... invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
+            placeholder=" "
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+            required
+            />
+        </label>
+        <label for="password">
+          <span>Password</span>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder=" "
+            pattern=".{7,}"
+            required
+          />
+        </label>
         <div className="CGU">
-          <input type="checkbox" id="CGU" />
+          <input type="checkbox" id="CGU" className="checkbox-rounded" />
           <label htmlFor="CGU">
             J’accepte les{" "}
             <a href="conditions-générales-utilisation" className="primary-2">

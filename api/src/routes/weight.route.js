@@ -1,4 +1,4 @@
-const petController = require("../controllers/pet.controller");
+const weightController = require("../controllers/weight.controller");
 const requestMiddleware = require("../middlewares/request.middleware");
 const authMiddleware = require("../middlewares/auth.middleware");
 
@@ -7,23 +7,23 @@ module.exports = (server) => {
    * Handle Pets
    */
   server
-    .route("/pets")
+    .route("/weights")
     .post(
       authMiddleware.verifyToken,
       requestMiddleware.haveBodyContent,
-      petController.create
+      weightController.create
     );
 
   server
-    .route("/pets/:petId")
-    // .get(authMiddleware.verifyToken, petController.getAllPets)
+    .route("/weights/:petId")
+    .get(authMiddleware.verifyToken, weightController.getWeightByPetId)
     .put(
       authMiddleware.verifyToken,
       requestMiddleware.haveBodyContent,
-      petController.update
+      weightController.update
     );
 
   server
-    .route("/pets/:petId")
-    .delete(authMiddleware.verifyToken, petController.delete);
+    .route("/weights/:petId")
+    .delete(authMiddleware.verifyToken, weightController.delete);
 };

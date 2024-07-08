@@ -1,19 +1,82 @@
 const Pet = require("../models/pet.model.js");
+const jwt = require("jsonwebtoken");
 
 /**
  * Handle Pets
  */
-exports.createPet = (req, res) => {
-  let ownerId = req.user.id;
-  Pet.create(req.body, ownerId, (err, pet) => {
-    if (err) return res.status(500).json({ message: err });
-    return res.json(pet);
+exports.create = (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const payload = jwt.verify(token, process.env.JWT_SECRET || "verySecret");
+    const ownerId = payload.id;
+
+    Pet.create(req.body, ownerId, (err, pet) => {
+      if (err) {
+        console.error("Error creating pet: ", err);
+        return res.status(400).json({ message: err.message });
+      }
+      return res.status(201).json(pet);
+    });
+  } catch (error) {
+    console.error("Error processing request: ", error);
+    return res.status(500).json({ message: "Server error." });
+  }
+};
+
+exports.update = (req, res) => {
+  const petId = req.params.petId;
+  const updatedPet = req.body;
+
+  if (!petId) {
+    return res.status(400).json({ message: "Pet ID is required." });
+  }
+
+  Pet.updateById(petId, updatedPet, (err, pet) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        return res.status(404).json({ message: "Pet not found." });
+      }
+      console.error("Error updating pet: ", err);
+      return res.status(500).json({ message: "Server error." });
+    }
+    return res.status(200).json({ pet });
   });
 };
 
 exports.getAllPets = (req, res) => {
-  Pet.findByUserId(req.params.userId, (err, pets) => {
-    if (err) return res.status(500).json({ message: "Erreur serveur." });
-    return res.json(pets);
+  const userId = req.params.userId;
+
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is required." });
+  }
+
+  Pet.findByUserId(userId, (err, pets) => {
+    if (err) {
+      console.error("Error retrieving pets: ", err);
+      return res.status(500).json({ message: "Server error." });
+    }
+    if (!pets || pets.length === 0) {
+      return res.status(404).json({ message: "No pets found for this user." });
+    }
+    return res.status(200).json(pets);
+  });
+};
+
+exports.delete = (req, res) => {
+  const petId = req.params.petId;
+
+  if (!petId) {
+    return res.status(400).json({ message: "Pet ID is required." });
+  }
+
+  Pet.deleteById(petId, (err, pet) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        return res.status(404).json({ message: "Pet not found." });
+      }
+      console.error("Error deleting pet: ", err);
+      return res.status(500).json({ message: "Server error." });
+    }
+    return res.status(204).json({ message: "Pet deleted successfully." });
   });
 };

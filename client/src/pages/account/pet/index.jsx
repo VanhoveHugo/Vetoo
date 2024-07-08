@@ -1,41 +1,85 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { UserContext } from "../../../provider/user.provider";
-import { useContext } from "react";
 import { motion } from "framer-motion";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-import { handleDate, handleType } from "../../../utils/data.manager";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faPenToSquare,
+} from "@fortawesome/free-solid-svg-icons";
 import { fromLeft, pageTransition } from "../../../utils/animation.manager";
+import { convertDateToAge, handleDate } from "../../../utils/data.manager";
+import { Line } from "react-chartjs-2";
+import WeightChart from "../../../components/WeightChart";
 
 const PetPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useContext(UserContext);
+  const [appointments, setAppointments] = useState([]);
+  const [weights, setWeights] = useState([]);
+  const [isFetched, setIsFetched] = useState(false);
+  const [pet, setPet] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!user) {
-    return null;
+  useEffect(() => {
+    if (user) {
+      if (!user.pets || user.pets.length === 0) {
+        navigate("/nopets");
+        return;
+      }
+
+      const petId = Number(id);
+      const foundPet = user.pets.find((pet) => pet.id === petId);
+
+      if (!foundPet) {
+        navigate("/");
+        return;
+      }
+
+      setPet(foundPet);
+      setLoading(false);
+    }
+  }, [user, id, navigate]);
+
+  useEffect(() => {
+    if (!pet || isFetched) return;
+
+    fetch(`/api/appointments/${pet.id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAppointments(data);
+        setIsFetched(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [pet, isFetched]);
+
+  useEffect(() => {
+    // Remplacez par votre appel API pour obtenir les poids
+    fetch(`/api/weights/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setWeights(data))
+      .catch((err) => console.error(err));
+  }, [id]);
+
+  if (loading) {
+    return <div>Chargement...</div>;
   }
 
-  if (!user.pets) {
-    navigate("/profile");
+  if (!pet) {
     return null;
   }
-
-  if (user.pets.length === 0) {
-    navigate("/new-pet");
-    return null;
-  }
-
-  const validId = user?.pets.map((pet) => pet.id).includes(Number(id));
-
-  if (!validId) {
-    navigate("/profile");
-    return null;
-  }
-
-  const pet = user.pets.find((pet) => pet.id === Number(id));
 
   return (
     <motion.main
@@ -45,17 +89,98 @@ const PetPage = () => {
       variants={fromLeft}
       transition={pageTransition}
     >
-      <div className="toolbar leftCTA">
+      <header className="toolbar center">
         <Link to={`/`} className="back">
           <FontAwesomeIcon icon={faChevronLeft} />
         </Link>
         <h1>{pet.name}</h1>
+        <Link to={`/pet/edit/${pet.id}`} className="edit">
+          <FontAwesomeIcon icon={faPenToSquare} />
+        </Link>
+      </header>
+
+      <div className="pet-infos">
+        <img className="" src={pet.picture_url} alt={pet.name} />
+        <div className="info">
+          <p className="all-infos">
+            {pet.type && (
+              <span>
+                {pet.type === "d"
+                  ? pet.gender === "f"
+                    ? "Chienne"
+                    : "Chien"
+                  : pet.type === "c"
+                  ? pet.gender === "f"
+                    ? "Chatte"
+                    : "Chat"
+                  : "NAC"}
+              </span>
+            )}
+            {pet.birthdate && <span>{convertDateToAge(pet.birthdate)}</span>}
+          </p>
+          <p className="chip">{pet.chip}</p>
+        </div>
       </div>
-      <div className="content">
-        <img src={pet.picture_url} alt={pet.name} />
-        <p>{handleDate(pet.birthdate)}</p>
-        <p>{handleType(pet.type)}</p>
-      </div>
+
+      <section>
+        <Link to={`/weight/${pet.id}`} className="head">
+          <h2>Poids</h2>
+          <FontAwesomeIcon icon={faChevronRight} />
+        </Link>
+        {weights.length > 0 ? (
+          <WeightChart weights={weights} />
+        ) : (
+          <div className="content">
+            <p>Vous n'avez pas encore renseigné le poids de votre animal.</p>
+          </div>
+        )
+        }
+      </section>
+      {/* <section>
+        <div className="head">
+          <h2>Vaccins</h2>
+          <FontAwesomeIcon icon={faChevronRight} />
+        </div>
+        <div className="content">
+          <p>Vous n'avez pas encore renseigné le poids de votre animal.</p>
+        </div>
+      </section>
+      <section>
+        <div className="head">
+          <h2>Traitements</h2>
+          <FontAwesomeIcon icon={faChevronRight} />
+        </div>
+        <div className="content">
+          <p>Vous n'avez pas encore renseigné le poids de votre animal.</p>
+        </div>
+      </section> */}
+      <section>
+        <Link to={`/new-appointment/${pet.id}`} className="head">
+          <h2>Rendez-vous vétérinaire</h2>
+          <FontAwesomeIcon icon={faChevronRight} />
+        </Link>
+        <div className="content">
+          {appointments.length > 0 ? (
+            appointments.map((appointment) => (
+              <Link
+                to={`/appointment/${appointment.id}`}
+                key={appointment.id}
+                className="column appointment"
+              >
+                <div className="row">
+                  <p className="reason">{appointment.reason}</p>
+                  <p className="meet_at">{handleDate(appointment.meet_at)}</p>
+                </div>
+                <div className="row">
+                  <p>{appointment.vet_name}</p>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <p>Vous n'avez pas encore renseigné vos prochains rendez-vous.</p>
+          )}
+        </div>
+      </section>
     </motion.main>
   );
 };
