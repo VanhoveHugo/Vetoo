@@ -6,12 +6,43 @@ const jwt = require("jsonwebtoken");
  * Authentication
  */
 exports.register = (req, res) => {
-  User.create(req.body, (err, user) => {
-    if (err) {
-      return res.status(500).json({ message: "Erreur serveur." });
+  try {
+    if (!email)
+      return res
+        .status(400)
+        .json({ kind: "content_not_found", content: "email" });
+
+    if (!email.match(/^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,6}$/))
+      return res
+        .status(400)
+        .json({ kind: "content_invalid", content: "email" });
+
+    if (email.length > 255)
+      return res
+        .status(400)
+        .json({ kind: "content_too_long", content: "email" });
+
+    if (!password)
+      return res
+        .status(400)
+        .json({ kind: "content_not_found", content: "password" });
+
+    if (password.length < 8) {
+      return res
+        .status(400)
+        .json({ kind: "content_too_short", content: "password" });
     }
-    return res.json(user);
-  });
+
+    User.create(req.body, (err, user) => {
+      if (err) {
+        return res.status(500).json({ message: "Erreur serveur." });
+      }
+      return res.json(user);
+    });
+  } catch (error) {
+    console.error("Unexpected error:", error.message);
+    return res.status(500).json({ message: "Erreur serveur." });
+  }
 };
 
 exports.login = (req, res) => {
@@ -22,21 +53,31 @@ exports.login = (req, res) => {
     return res
       .status(400)
       .json({ kind: "content_not_found", content: "email" });
+
+  if (!email.match(/^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,6}$/))
+    return res.status(400).json({ kind: "content_invalid", content: "email" });
+
+  if (email.length > 255)
+    return res.status(400).json({ kind: "content_too_long", content: "email" });
+
   if (!password)
     return res
       .status(400)
       .json({ kind: "content_not_found", content: "password" });
 
+  if (password.length < 8)
+    return res
+      .status(400)
+      .json({ kind: "content_too_short", content: "password" });
+
   User.login(email, password, (err, user) => {
     if (err) {
-      if (err.kind === "user_not_found" || err.kind === "password_mismatch")
+      if (err.code === "user_not_found" || err.code === "password_mismatch")
         return res
           .status(400)
           .json({ message: "Utilisateur ou mot de passe incorrect." });
       return res.status(500).json({ message: JSON.stringify(err) });
     }
-    if (!user)
-      return res.status(404).json({ message: "Utilisateur non trouvé." });
 
     const token = jwt.sign(
       { id: user.id },
@@ -100,7 +141,7 @@ exports.getAccount = (req, res) => {
 
     User.getById(decoded.id, (err, user) => {
       if (err) {
-        return res.status(500).json({ message: "Erreur serveur." });
+        return res.status(500).json({ message: err });
       }
 
       if (!user) {
@@ -109,7 +150,7 @@ exports.getAccount = (req, res) => {
 
       Pet.findByUserId(decoded.id, (err, pets) => {
         if (err) {
-          return res.status(500).json({ message: "Erreur serveur." });
+          return res.status(500).json({ message: err });
         }
 
         user.pets = pets;

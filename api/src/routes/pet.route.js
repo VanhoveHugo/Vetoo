@@ -15,8 +15,8 @@ module.exports = (server) => {
     );
 
   server
-    .route("/pets/:petId")
-    // .get(authMiddleware.verifyToken, petController.getAllPets)
+    .route("/pets/:id")
+    .get(authMiddleware.verifyToken, petController.getAllPets)
     .put(
       authMiddleware.verifyToken,
       requestMiddleware.haveBodyContent,

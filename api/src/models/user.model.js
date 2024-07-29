@@ -28,15 +28,6 @@ User.create = async (newUser, result) => {
       );
     }
 
-    // Check if email format is valid
-    const emailRegex = /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,6}$/;
-    if (!emailRegex.test(newUser.email)) {
-      return result(
-        { kind: "content_invalid", message: "Invalid email format" },
-        null
-      );
-    }
-
     // Check if email already exists
     const emailExists = await new Promise((resolve, reject) => {
       database.query(
@@ -91,26 +82,11 @@ User.login = (email, password, result) => {
     `SELECT id, name, email, password FROM users WHERE email = ? LIMIT 1`,
     email,
     (err, data) => {
-      if (err) {
-        console.error(err);
-        result(null, err);
-        return;
-      }
-
-      if (data.length === 0) {
-        result(null, null);
-        return;
-      }
-      if (!bcrypt.compareSync(password, data[0].password)) {
-        result({
-          kind: "password_mismatch",
-          message: "Password does not match",
-        }, null);
-        return;
-      }
-
-      result(null, data[0]);
-      return;
+      if (err) return result(null, err);
+      if (data.length === 0) return result({ code: "user_not_found" }, null);
+      if (!bcrypt.compareSync(password, data[0].password))
+        return result({ code: "password_mismatch" }, null);
+      return result(null, data[0]);
     }
   );
 };

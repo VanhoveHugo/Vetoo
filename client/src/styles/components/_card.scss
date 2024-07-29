@@ -1,0 +1,117 @@
+.card {
+  width: 100%;
+  border-radius: 12px;
+  padding: 20px;
+
+  .head {
+    .name {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .type {
+      font-size: 14px;
+    }
+  }
+
+  .infos {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0 0;
+    padding: 1rem 0 0;
+    border-top: 1px solid;
+
+    .info {
+      display: flex;
+      align-items: center;
+
+      .icon {
+        margin-right: 0.5rem;
+      }
+
+      .text {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+.card.profile-card {
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 0 auto 20px;
+  display: inline;
+  padding: 0px;
+  overflow: hidden;
+  width: 80%;
+
+  img {
+    width: 100%;
+  }
+}
+
+.card.pet {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.avatar {
+  background: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-right: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &-empty {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .card.pet {
+    width: 150px;
+    padding: 16px;
+    gap: 10px;
+    flex-direction: column;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    .name {
+      font-weight: 600;
+    }
+  }
+
+  .avatar {
+    width: 95px;
+    height: 95px;
+    margin-right: 0;
+  }
+
+  .list {
+    flex-direction: row;
+    gap: 25px;
+
+    a {
+      width: fit-content;
+    }
+  }
+}

@@ -46,7 +46,7 @@ const CreateAppointmentsForm = ({ addError }) => {
     const vet_name = vetName;
     const pet_id = pet.id;
 
-    fetch("/api/appointments", {
+    fetch(`${process.env.REACT_APP_API_URL}/appointments`, {
       method: "POST",
       body: JSON.stringify({
         meet_at,
@@ -87,7 +87,7 @@ const CreateAppointmentsForm = ({ addError }) => {
         <h1>Planifier un rendez-vous</h1>
       </div>
       <form onSubmit={handleSubmit}>
-        <div className="meet_at">
+        <div className="field required">
           <label htmlFor="meet_at">Date du rendez-vous</label>
           <input
             type="date"
@@ -99,19 +99,7 @@ const CreateAppointmentsForm = ({ addError }) => {
           />
         </div>
 
-        <div className="vet">
-          <label htmlFor="vet_name">Vétérinaire</label>
-          <input
-            type="text"
-            name="vet_name"
-            id="vet_name"
-            value={vetName}
-            onChange={(e) => setVetName(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="reason">
+        <div className="field requird">
           <label htmlFor="reason">Raison</label>
           <select
             name="reason"
@@ -129,7 +117,18 @@ const CreateAppointmentsForm = ({ addError }) => {
           </select>
         </div>
 
-        <div className="comment">
+        <div className="field optional">
+          <label htmlFor="vet_name">Vétérinaire</label>
+          <input
+            type="text"
+            name="vet_name"
+            id="vet_name"
+            value={vetName}
+            onChange={(e) => setVetName(e.target.value)}
+          />
+        </div>
+
+        <div className="field optional">
           <label htmlFor="comment">Commentaire</label>
           <textarea
             name="comment"

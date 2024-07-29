@@ -5,10 +5,10 @@ export default function PrivacyPolicy() {
   return (
     <main>
       <Helmet>
-        <title>Politique de Confidentialité - Vetoo</title>
+        <title>Politique de Confidentialité - Mon Espace Santé Animale</title>
         <meta
           name="description"
-          content="Consultez les Politique de Confidentialité de Vetoo."
+          content="Consultez les Politique de Confidentialité de Mon Espace Santé Animale."
         />
       </Helmet>
       <header>
@@ -86,7 +86,7 @@ export default function PrivacyPolicy() {
       </section>
 
       <footer>
-        <p>&copy; 2024 Vetoo. Tous droits réservés.</p>
+        <p>&copy; 2024 Mon Espace Santé Animale. Tous droits réservés.</p>
       </footer>
     </main>
   );

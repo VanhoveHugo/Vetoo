@@ -19,7 +19,7 @@ export default function Login() {
     const password = document.getElementById("password").value;
     setError(null);
 
-    fetch("/api/auth/login", {
+    fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
       method: "POST",
       body: JSON.stringify({
         email,
@@ -35,10 +35,28 @@ export default function Login() {
       .then((data) => {
         if (data.message) return setError(data.message);
         if (data.content) {
-          if (data.content === "email") return setEmailError(data.kind);
-          if (data.content === "password") return setPasswordError(data.kind);
+          if (data.content === "email") {
+            if (data.kind === "content_not_found")
+              return setEmailError(
+                "Le champ email est requis pour se connecter."
+              );
+
+            if (data.kind === "content_invalid")
+              return setEmailError("Veuillez entrer une adresse email valide.");
+          }
+          if (data.content === "password") {
+            if (data.kind === "content_not_found")
+              return setPasswordError(
+                "Le champ mot de passe est requis pour se connecter."
+              );
+
+            if (data.kind === "content_too_short")
+              return setPasswordError(
+                "Le mot de passe doit contenir au moins 8 caractères."
+              );
+          }
         }
-        if (!data.token) return setError("Erreur serveur.");
+        if (!data.token) return setError("Une erreur s'est produite.");
         setToken(data.token);
         updateUser(data.user);
         navigate("/", { replace: true });
@@ -68,23 +86,23 @@ export default function Login() {
         </legend>
         {error && <p className="error">{error}</p>}
 
-        <div className="field">
+        <div className="field required">
+          <label htmlFor="email">Email</label>
           <input
             type="email"
             name="email"
             id="email"
-            placeholder="Email"
             onChange={() => setEmailError(null)}
             required
           />
           {emailError && <p className="error">{emailError}</p>}
         </div>
-        <div className="field">
+        <div className="field required">
+          <label htmlFor="password">Mot de passe</label>
           <input
             type="password"
             name="password"
             id="password"
-            placeholder="Mot de passe"
             min={8}
             onChange={() => setPasswordError(null)}
             required

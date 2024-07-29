@@ -48,10 +48,10 @@ const CreateWeightForm = ({ addError }) => {
       return;
     }
 
-    fetch("/api/weights", {
+    fetch(`${process.env.REACT_APP_API_URL}/weights`, {
       method: "POST",
       body: JSON.stringify({
-        data: weightData
+        data: weightData,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const CreateWeightForm = ({ addError }) => {
         <h1>Ajouter le poids</h1>
       </div>
       <form onSubmit={handleSubmit}>
-        <div className="birthday">
+        <div className="field required">
           <label htmlFor="date">Date de pesée</label>
           <input
             type="date"
@@ -104,7 +104,7 @@ const CreateWeightForm = ({ addError }) => {
           />
         </div>
 
-        <div className="name">
+        <div className="field required">
           <label htmlFor="weight">Poids</label>
           <input
             type="number"

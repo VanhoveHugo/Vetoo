@@ -16,7 +16,6 @@ const WeightChart = ({ weights }) => {
           duration: 2000,
         },
         tension: 0.3,
-        fill: true,
         cubicInterpolationMode: "monotone",
         categoryPercentage: 0.5,
         barPercentage: 0.5,

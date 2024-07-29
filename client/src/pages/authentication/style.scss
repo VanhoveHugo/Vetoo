@@ -3,6 +3,11 @@
   flex-direction: column;
   max-width: 480px;
   margin: 2rem auto;
+  h1 {
+    font-size: 40px;
+    font-weight: 600;
+    margin: 0 0 2rem;
+  }
 }
 .bottom {
   position: fixed;
@@ -21,7 +26,7 @@
 @media (min-width: 480px) {
   .bottom {
     position: relative;
-    margin-top: 2rem;
+    margin-top: 1rem;
     top: initial;
     bottom: initial;
     left: initial;
@@ -36,8 +41,10 @@ h1 {
   margin: 0 0 1rem;
 }
 
-.CGU {
-  display: flex;
+.field.CGU {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
 
   label {
     font-size: 12px;
@@ -46,13 +53,16 @@ h1 {
       margin-left: 0.25rem;
     }
   }
+  .error {
+    bottom: -25px;
+  }
 }
 
 .field {
   position: relative;
   .error {
     position: absolute;
-    bottom: 5px;
+    bottom: -15px;
     left: 0;
   }
 }

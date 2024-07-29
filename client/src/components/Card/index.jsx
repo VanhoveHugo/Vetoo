@@ -1,5 +1,9 @@
-import "./style.css";
+import { Link } from "react-router-dom";
 
-export default function Card({ css, children }) {
-  return <div className={"card " + css}>{children}</div>;
+export default function Card({ css, link, children }) {
+  return (
+    <Link className={"card " + css} to={link}>
+      {children}
+    </Link>
+  );
 }

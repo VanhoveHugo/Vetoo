@@ -1,7 +1,3 @@
--- Create a user with limited privileges
-CREATE USER 'webuser'@'%' IDENTIFIED BY 'password';
-GRANT SELECT, INSERT, UPDATE, DELETE ON vetoo.* TO 'webuser'@'%';
-
 -- Create the database if it doesn't exist
 CREATE DATABASE IF NOT EXISTS `vetoo`;
 
@@ -43,7 +39,9 @@ CREATE TABLE IF NOT EXISTS `appointments` (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     meet_at DATETIME NOT NULL,
-    title VARCHAR(20) NOT NULL,
+    reason VARCHAR(20) NOT NULL,
+    vet_name VARCHAR(20),
+    comment TEXT,
     PRIMARY KEY (id),
     FOREIGN KEY (pet_id) REFERENCES pets(id) ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX (pet_id)

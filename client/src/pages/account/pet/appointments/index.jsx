@@ -25,14 +25,16 @@ const AppointmentDetailPage = () => {
 
     const fetchAppointment = async () => {
       try {
-        const response = await fetch(`/api/appointments/${id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/appointments/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        });
-        const data = await response.json();
-        setAppointment(data);
-        setIsFetched(true);
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            setAppointment(data);
+            setIsFetched(true);
+          });
       } catch (error) {
         console.error("An error occurred while fetching appointment:", error);
       }
@@ -58,11 +60,11 @@ const AppointmentDetailPage = () => {
       transition={pageTransition}
     >
       <header className="toolbar center">
-        <Link to={`/`} className="back">
+        <Link to={`/pet/${appointment.pet_id}`} className="back">
           <FontAwesomeIcon icon={faChevronLeft} />
         </Link>
         <h1>Appointment Details</h1>
-        <Link to={`/edit-appointment/${id}`} className="edit">
+        <Link to={`/edit-appointment/${appointment.pet_id}`} className="edit">
           <FontAwesomeIcon icon={faPenToSquare} />
         </Link>
       </header>

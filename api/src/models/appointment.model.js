@@ -129,7 +129,7 @@ Appointment.findByPetId = async (petId, result) => {
 
     // Query to find appointment by ID
     database.query(
-      `SELECT meet_at, reason, vet_name, comment, pet_id FROM appointments WHERE pet_id = ?`,
+      `SELECT * FROM appointments WHERE pet_id = ?`,
       petId,
       (err, data) => {
         if (err) {
@@ -157,6 +157,61 @@ Appointment.findByPetId = async (petId, result) => {
     });
   }
 };
+
+Appointment.getById = async (appointmentId, result) => {
+  try {
+    // Check if appointmentId is provided
+    if (!appointmentId) {
+      return result(
+        {
+          kind: "appointment_id_required",
+          message: "Appointment ID is required",
+        },
+        null
+      );
+    }
+
+    // Query to find appointment by ID
+    database.query(
+      `SELECT * FROM appointments WHERE id = ?`,
+      appointmentId,
+      (err, data) => {
+        if (err) {
+          console.error(
+            "An error occurred while reading the appointment:",
+            err.message
+          );
+          return result(
+            {
+              kind: "database_error",
+              message: "An error occurred while querying the database",
+            },
+            null
+          );
+        }
+
+        // Check if any appointment is found
+        if (data.length === 0) {
+          return result(
+            {
+              kind: "not_found",
+              message: `Appointment with ID ${appointmentId} not found`,
+            },
+            null
+          );
+        }
+
+        result(null, data[0]);
+      }
+    );
+  } catch (error) {
+    console.error("Unexpected error:", error.message);
+    result(null, {
+      kind: "unexpected_error",
+      message: "An unexpected error occurred",
+    });
+  }
+}
 
 Appointment.updateById = async (appointmentId, updatedAppointment, result) => {
   try {

@@ -59,13 +59,13 @@ const EditPetPage = () => {
     e.preventDefault();
     const name = document.getElementById("name").value;
     const type = document.querySelector("input[name='type']:checked").value;
-    const gender = document.querySelector("input[name='gender']:checked").value;
+    const gender = document.querySelector("input[name='gender']:checked")?.value;
     const birthdate =
       birthday === new Date("2000-01-01").toISOString().split("T")[0]
         ? null
         : document.getElementById("birthdate").value;
 
-    fetch(`/api/pets/${petId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/pets/${petId}`, {
       method: "PUT",
       body: JSON.stringify({
         name,
@@ -91,7 +91,7 @@ const EditPetPage = () => {
   };
 
   const handleDelete = () => {
-    fetch(`/api/pets/${petId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/pets/${petId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -131,7 +131,7 @@ const EditPetPage = () => {
         </button>
       </div>
       <form onSubmit={handleSubmit}>
-        <div className="name">
+        <div className="field required">
           <label htmlFor="name">Nom</label>
           <input
             id="name"
@@ -142,7 +142,7 @@ const EditPetPage = () => {
           />
         </div>
 
-        <div className="type">
+        <div className="field required">
           <label>Espèce</label>
           <div className="radio-list">
             <div>
@@ -179,27 +179,10 @@ const EditPetPage = () => {
                 <FontAwesomeIcon icon={faCat} />
               </label>
             </div>
-            <div>
-              <input
-                type="radio"
-                name="type"
-                id="nac"
-                value="n"
-                checked={selectedType === "n"}
-                onChange={() => setSelectedType("n")}
-              />
-              <label
-                htmlFor="nac"
-                tabIndex={0}
-                onKeyDown={(e) => handleKeyDown(e, "type", "n")}
-              >
-                NAC
-              </label>
-            </div>
           </div>
         </div>
 
-        <div className="gender">
+        <div className="field optional">
           <label>Genre</label>
           <div className="radio-list">
             <div>
@@ -239,13 +222,12 @@ const EditPetPage = () => {
           </div>
         </div>
 
-        <div className="birthdate">
+        <div className="field optional">
           <label htmlFor="birthdate">Date de naissance</label>
           <input
             type="date"
             name="birthdate"
             id="birthdate"
-            value={birthday}
             defaultValue={
               pet.birthdate
                 ? new Date(pet.birthdate).toISOString().split("T")[0]
@@ -256,6 +238,7 @@ const EditPetPage = () => {
             min="2000-01-02"
           />
         </div>
+
         <input
           className="button"
           type="submit"

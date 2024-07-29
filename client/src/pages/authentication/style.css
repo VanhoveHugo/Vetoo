@@ -4,6 +4,11 @@
   max-width: 480px;
   margin: 2rem auto;
 }
+.form-center h1 {
+  font-size: 40px;
+  font-weight: 600;
+  margin: 0 0 2rem;
+}
 
 .bottom {
   position: fixed;
@@ -22,7 +27,7 @@
 @media (min-width: 480px) {
   .bottom {
     position: relative;
-    margin-top: 2rem;
+    margin-top: 1rem;
     top: initial;
     bottom: initial;
     left: initial;
@@ -36,15 +41,20 @@ h1 {
   margin: 0 0 1rem;
 }
 
-.CGU {
-  display: flex;
+.field.CGU {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
 }
-.CGU label {
+.field.CGU label {
   font-size: 12px;
   flex-direction: row;
 }
-.CGU label a {
+.field.CGU label a {
   margin-left: 0.25rem;
+}
+.field.CGU .error {
+  bottom: -25px;
 }
 
 .field {
@@ -52,7 +62,7 @@ h1 {
 }
 .field .error {
   position: absolute;
-  bottom: 5px;
+  bottom: -15px;
   left: 0;
 }
 

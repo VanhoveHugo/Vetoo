@@ -10,7 +10,40 @@ exports.create = (req, res) => {
     const payload = jwt.verify(token, process.env.JWT_SECRET || "verySecret");
     const ownerId = payload.id;
 
-    Pet.create(req.body, ownerId, (err, pet) => {
+    // Check if user is logged in
+    if (!ownerId) {
+      return res.status(400).json({ kind: "not_logged_in" });
+    }
+
+    const newPet = req.body;
+
+    // Handle required fields
+    const requiredFields = ["name", "type"];
+    for (const field of requiredFields) {
+      if (!newPet[field]) {
+        return res
+          .status(400)
+          .json({ kind: "content_not_found", content: field });
+      }
+    }
+
+    // Handle constraints of database
+    if (newPet.name.length > 20) {
+      return res
+        .status(400)
+        .json({ kind: "content_too_long", content: "name" });
+    }
+    if (!["d", "c"].includes(newPet.type)) {
+      return res.status(400).json({ kind: "content_invalid", content: "type" });
+    }
+    if (newPet.gender && !["m", "f"].includes(newPet.gender)) {
+      return res
+        .status(400)
+        .json({ kind: "content_invalid", content: "gender" });
+    }
+
+    // Now handle the image upload
+    Pet.create(newPet, ownerId, (err, pet) => {
       if (err) {
         console.error("Error creating pet: ", err);
         return res.status(400).json({ message: err.message });
@@ -24,7 +57,7 @@ exports.create = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  const petId = req.params.petId;
+  const petId = req.params.id;
   const updatedPet = req.body;
 
   if (!petId) {
@@ -44,7 +77,7 @@ exports.update = (req, res) => {
 };
 
 exports.getAllPets = (req, res) => {
-  const userId = req.params.userId;
+  const userId = req.params.id;
 
   if (!userId) {
     return res.status(400).json({ message: "User ID is required." });

@@ -5,10 +5,10 @@ export default function LegalNotice() {
   return (
     <main>
       <Helmet>
-        <title>Mentions Légales - Vetoo</title>
+        <title>Mentions Légales - Mon Espace Santé Animale</title>
         <meta
           name="description"
-          content="Consultez les Mentions Légales de Vetoo."
+          content="Consultez les Mentions Légales de Mon Espace Santé Animale."
         />
       </Helmet>
       <header>
@@ -55,8 +55,9 @@ export default function LegalNotice() {
         <h2>Propriété intellectuelle</h2>
         <p>
           Le contenu du site (textes, images, graphismes, logo, etc.) est la
-          propriété de Vetoo ou de ses partenaires et est protégé par les lois
-          françaises et internationales relatives à la propriété intellectuelle.
+          propriété de Mon Espace Santé Animale ou de ses partenaires et est
+          protégé par les lois françaises et internationales relatives à la
+          propriété intellectuelle.
         </p>
       </section>
 
@@ -64,10 +65,10 @@ export default function LegalNotice() {
         <h2>Limitation de responsabilité</h2>
         <p>
           Je ne pourrai être tenue responsable des dommages directs et indirects
-          causés au matériel de l'utilisateur lors de l'accès au site Vetoo, et
-          résultant soit de l'utilisation d'un matériel ne répondant pas aux
-          spécifications indiquées, soit de l'apparition d'un bug ou d'une
-          incompatibilité.
+          causés au matériel de l'utilisateur lors de l'accès au site Mon Espace
+          Santé Animale, et résultant soit de l'utilisation d'un matériel ne
+          répondant pas aux spécifications indiquées, soit de l'apparition d'un
+          bug ou d'une incompatibilité.
         </p>
       </section>
 
@@ -88,25 +89,25 @@ export default function LegalNotice() {
       <section id="cookies">
         <h2>Cookies</h2>
         <p>
-          Le site Vetoo peut être amené à vous demander l'acceptation des
-          cookies pour des besoins de statistiques et d'affichage. Un cookie est
-          une information déposée sur votre disque dur par le serveur du site
-          que vous visitez.
+          Le site Mon Espace Santé Animale peut être amené à vous demander
+          l'acceptation des cookies pour des besoins de statistiques et
+          d'affichage. Un cookie est une information déposée sur votre disque
+          dur par le serveur du site que vous visitez.
         </p>
       </section>
 
       <section id="liens-hypertextes">
         <h2>Liens hypertextes</h2>
         <p>
-          Le site Vetoo contient un certain nombre de liens hypertextes vers
-          d'autres sites. Cependant, je n'ai pas la possibilité de vérifier le
-          contenu des sites ainsi visités, et n'assumera en conséquence aucune
-          responsabilité de ce fait.
+          Le site Mon Espace Santé Animale contient un certain nombre de liens
+          hypertextes vers d'autres sites. Cependant, je n'ai pas la possibilité
+          de vérifier le contenu des sites ainsi visités, et n'assumera en
+          conséquence aucune responsabilité de ce fait.
         </p>
       </section>
 
       <footer>
-        <p>&copy; 2024 Vetoo. Tous droits réservés.</p>
+        <p>&copy; 2024 Mon Espace Santé Animale. Tous droits réservés.</p>
       </footer>
     </main>
   );

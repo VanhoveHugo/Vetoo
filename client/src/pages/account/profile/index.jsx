@@ -1,4 +1,3 @@
-import "./style.css";
 import { useAuth } from "../../../provider/auth.provider";
 import { UserContext } from "../../../provider/user.provider";
 import { useContext } from "react";
@@ -31,38 +30,44 @@ export default function Profil() {
   return (
     <main>
       <div className="toolbar">
-        <h1>Vetoo</h1>
-        <Link to={`/new-pet`} className="new-pet">
+        <h1>Mon Espace Santé Animale</h1>
+        <Link to={`/new-pet`} className="new-pet button desktop-only">
+          Ajouter un animal
+        </Link>
+        <button className="logout desktop-only" onClick={() => handleLogout()}>
+          Déconnexion
+        </button>
+        <Link to={`/new-pet`} className="new-pet mobile-only">
           <FontAwesomeIcon icon={faPlus} />
         </Link>
-        <button className="settings" onClick={handleMenu}>
+        <button className="settings mobile-only" onClick={handleMenu}>
           <FontAwesomeIcon icon={faEllipsis} />
           <ul className="settings--menu">
-            {/* <li>Paramètres</li>
-            <li>A propos</li> */}
             <li>
-              <button onClick={() => handleLogout()}>Déconnexion  </button>
+              <button>Profil</button>
+            </li>
+            <li>
+              <button>Paramètre</button>
+            </li>
+            <li>
+              <button onClick={() => handleLogout()}>Déconnexion</button>
             </li>
           </ul>
         </button>
       </div>
-      {user?.pets &&
-        user.pets.map((pet) => (
-          <Link to={`/pet/${pet.id}`} key={pet.id}>
-            <Card css="pet">
+      <div className="list">
+        {user?.pets &&
+          user.pets.map((pet) => (
+            <Card css="pet" link={`/pet/${pet.id}`} key={pet.id}>
               {pet.picture_url === undefined || pet.picture_url === null ? (
                 pet.type === "d" ? (
                   <div className="avatar avatar-empty">
                     <FontAwesomeIcon icon={faDog} />
                   </div>
-                ) : pet.type === "c" ? (
+                ) : (
                   <div className="avatar avatar-empty">
                     <FontAwesomeIcon icon={faCat} />
                   </div>
-                ) : (
-                  pet.type === "n" && (
-                    <div className="avatar avatar-empty">NAC</div>
-                  )
                 )
               ) : (
                 <img className="avatar" src={pet.picture_url} alt={pet.name} />
@@ -70,10 +75,10 @@ export default function Profil() {
               <div className="content">
                 <p className="name">{pet.name}</p>
               </div>
-              <FontAwesomeIcon icon={faChevronRight} />
+              <FontAwesomeIcon icon={faChevronRight} className="mobile-only" />
             </Card>
-          </Link>
-        ))}
+          ))}
+      </div>
     </main>
   );
 }

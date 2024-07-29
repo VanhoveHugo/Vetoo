@@ -18,8 +18,6 @@ Weight.create = (newWeight, result) => {
       );
     }
 
-    console.log("New weight: ", newWeight);
-
     // Requête pour insérer un nouveau poids
     const query = `INSERT INTO weights SET ?`;
     database.query(query, newWeight, (err, data) => {

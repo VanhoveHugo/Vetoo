@@ -4,8 +4,6 @@ export const handleType = (type) => {
       return "Dog";
     case "c":
       return "Cat";
-    case "n":
-      return "NAC";
     default:
       return "Unknown";
   }

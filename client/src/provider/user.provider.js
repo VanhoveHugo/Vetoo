@@ -7,12 +7,10 @@ const UserContextProvider = ({ children }) => {
   const [isFetched, setIsFetched] = useState(false);
 
   const addPet = (newPet) => {
-    console.log(newPet);
     if (!newPet || !newPet.id)
       return console.error("Erreur lors de l'ajout de l'animal");
 
     const updatedUser = { ...user, pets: [...user.pets, newPet] };
-    console.log(updatedUser);
     updateUser(updatedUser);
   };
 
@@ -56,7 +54,7 @@ const UserContextProvider = ({ children }) => {
     } else {
       const fetchData = async () => {
         try {
-          fetch("/api/account", {
+          fetch(`${process.env.REACT_APP_API_URL}/account`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },

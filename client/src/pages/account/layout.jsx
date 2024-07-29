@@ -11,9 +11,7 @@ export default function Dashboard() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  if (!token) {
-    return <Navigate to="/login" />;
-  }
+  if (!token) return <Navigate to="/login" />;
 
   return <Outlet />;
 }

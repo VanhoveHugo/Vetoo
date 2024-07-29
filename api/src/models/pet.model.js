@@ -13,30 +13,6 @@ const Pet = (pet) => {
 
 Pet.create = async (newPet, ownerId, result) => {
   try {
-    // Check if user is logged in
-    if (!ownerId) {
-      return result({ kind: "not_logged_in" }, null);
-    }
-
-    // Handle required fields
-    const requiredFields = ["name", "type"];
-    for (const field of requiredFields) {
-      if (!newPet[field]) {
-        return result({ kind: "content_not_found", content: field }, null);
-      }
-    }
-
-    // Handle constraints of database
-    if (newPet.name.length > 20) {
-      return result({ kind: "content_too_long", content: "name" }, null);
-    }
-    if (!["d", "c", "n"].includes(newPet.type)) {
-      return result({ kind: "content_invalid", content: "type" }, null);
-    }
-    if (newPet.gender && !["m", "f"].includes(newPet.gender)) {
-      return result({ kind: "content_invalid", content: "gender" }, null);
-    }
-
     // Escape user inputs to prevent XSS
     const escapedPet = {
       name: xss(newPet.name),
@@ -103,7 +79,6 @@ Pet.findByUserId = async (userId, result) => {
 Pet.updateById = async (petId, updatedPet, result) => {
   try {
     // Check if petId is provided
-    console.log(updatedPet);
     if (!petId) {
       return result(
         { kind: "pet_id_required", message: "Pet ID is required" },
@@ -123,7 +98,7 @@ Pet.updateById = async (petId, updatedPet, result) => {
     if (updatedPet.name && updatedPet.name.length > 20) {
       return result({ kind: "content_too_long", content: "name" }, null);
     }
-    if (updatedPet.type && !["d", "c", "n"].includes(updatedPet.type)) {
+    if (updatedPet.type && !["d", "c"].includes(updatedPet.type)) {
       return result({ kind: "content_invalid", content: "type" }, null);
     }
     if (updatedPet.gender && !["m", "f"].includes(updatedPet.gender)) {

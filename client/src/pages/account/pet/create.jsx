@@ -24,21 +24,17 @@ const CreatePetForm = ({ addError }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const name = document.getElementById("name").value;
-    const gender = document.querySelector(
-      "input[name='gender']:checked"
-    )?.value;
-    const type = document.querySelector("input[name='type']:checked").value;
     const birthdate =
       birthday === new Date("2000-01-01").toISOString().split("T")[0]
         ? null
         : document.getElementById("birthdate").value;
 
-    fetch("/api/pets", {
+    fetch(`${process.env.REACT_APP_API_URL}/pets`, {
       method: "POST",
       body: JSON.stringify({
         name,
-        gender,
-        type,
+        type: selectedType,
+        gender: selectedGender,
         birthdate,
       }),
       headers: {
@@ -81,12 +77,22 @@ const CreatePetForm = ({ addError }) => {
         <h1>Créer un animal</h1>
       </div>
       <form onSubmit={handleSubmit}>
-        <div className="name">
-          <label htmlFor="name">Nom</label>
+        {/* <div className="field">
+          <label htmlFor="picture_url">Photo</label>
+          <input
+            id="picture_url"
+            name="picture_url"
+            type="file"
+            accept="image/png, image/jpeg"
+          />
+        </div> */}
+
+        <div className="field required">
+          <label htmlFor="name">Nom de l'animal</label>
           <input id="name" name="name" type="text" max={20} />
         </div>
 
-        <div className="type">
+        <div className="field required">
           <label>Espèce</label>
           <div className="radio-list">
             <div>
@@ -123,27 +129,10 @@ const CreatePetForm = ({ addError }) => {
                 <FontAwesomeIcon icon={faCat} />
               </label>
             </div>
-            <div>
-              <input
-                type="radio"
-                name="type"
-                id="nac"
-                value="n"
-                checked={selectedType === "n"}
-                onChange={() => setSelectedType("n")}
-              />
-              <label
-                htmlFor="nac"
-                tabIndex={0}
-                onKeyDown={(e) => handleKeyDown(e, "type", "n")}
-              >
-                NAC
-              </label>
-            </div>
           </div>
         </div>
 
-        <div className="gender">
+        <div className="field optional">
           <label>Genre</label>
           <div className="radio-list">
             <div>
@@ -153,6 +142,7 @@ const CreatePetForm = ({ addError }) => {
                 id="male"
                 value="m"
                 checked={selectedGender === "m"}
+                onChange={() => setSelectedGender("m")}
               ></input>
               <label
                 htmlFor="male"
@@ -169,6 +159,7 @@ const CreatePetForm = ({ addError }) => {
                 id="female"
                 value="f"
                 checked={selectedGender === "f"}
+                onChange={() => setSelectedGender("f")}
               ></input>
               <label
                 htmlFor="female"
@@ -181,7 +172,7 @@ const CreatePetForm = ({ addError }) => {
           </div>
         </div>
 
-        <div className="birthdate">
+        <div className="field optional">
           <label htmlFor="birthdate">Date de naissance</label>
           <input
             type="date"
@@ -193,6 +184,7 @@ const CreatePetForm = ({ addError }) => {
             min="2000-01-02"
           />
         </div>
+
         <input
           className="button"
           type="submit"

@@ -10,8 +10,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { fromLeft, pageTransition } from "../../../utils/animation.manager";
 import { convertDateToAge, handleDate } from "../../../utils/data.manager";
-import { Line } from "react-chartjs-2";
 import WeightChart from "../../../components/WeightChart";
+import NotFound from "../../404";
 
 const PetPage = () => {
   const navigate = useNavigate();
@@ -25,20 +25,9 @@ const PetPage = () => {
 
   useEffect(() => {
     if (user) {
-      if (!user.pets || user.pets.length === 0) {
-        navigate("/nopets");
-        return;
-      }
+      const foundPet = user.pets.find((pet) => pet.id === Number(id));
 
-      const petId = Number(id);
-      const foundPet = user.pets.find((pet) => pet.id === petId);
-
-      if (!foundPet) {
-        navigate("/");
-        return;
-      }
-
-      setPet(foundPet);
+      if (foundPet) setPet(foundPet);
       setLoading(false);
     }
   }, [user, id, navigate]);
@@ -46,7 +35,7 @@ const PetPage = () => {
   useEffect(() => {
     if (!pet || isFetched) return;
 
-    fetch(`/api/appointments/${pet.id}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/appointments/${pet.id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -63,22 +52,25 @@ const PetPage = () => {
 
   useEffect(() => {
     // Remplacez par votre appel API pour obtenir les poids
-    fetch(`/api/weights/${id}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/weights/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
       .then((res) => res.json())
-      .then((data) => setWeights(data))
+      .then((data) => {
+        setWeights(data);
+      })
       .catch((err) => console.error(err));
   }, [id]);
 
   if (loading) {
-    return <div>Chargement...</div>;
+    return;
   }
 
   if (!pet) {
-    return null;
+    console.log("too");
+    return <NotFound />;
   }
 
   return (
@@ -127,14 +119,14 @@ const PetPage = () => {
           <h2>Poids</h2>
           <FontAwesomeIcon icon={faChevronRight} />
         </Link>
-        {weights.length > 0 ? (
-          <WeightChart weights={weights} />
-        ) : (
-          <div className="content">
-            <p>Vous n'avez pas encore renseigné le poids de votre animal.</p>
-          </div>
-        )
-        }
+        <div className="content">
+          {weights.length > 0 ? (
+            <WeightChart weights={weights} />
+          ) : (
+              <p>Vous n'avez pas encore renseigné le poids de votre animal.</p>
+            )
+          }
+        </div>
       </section>
       {/* <section>
         <div className="head">
@@ -162,11 +154,12 @@ const PetPage = () => {
         <div className="content">
           {appointments.length > 0 ? (
             appointments.map((appointment) => (
-              <Link
-                to={`/appointment/${appointment.id}`}
-                key={appointment.id}
-                className="column appointment"
-              >
+              // <Link
+              //   to={`/appointment/${appointment.id}`}
+              //   key={appointment.id}
+              //   className="column appointment"
+              // >
+              <div className="column appointment">
                 <div className="row">
                   <p className="reason">{appointment.reason}</p>
                   <p className="meet_at">{handleDate(appointment.meet_at)}</p>
@@ -174,7 +167,8 @@ const PetPage = () => {
                 <div className="row">
                   <p>{appointment.vet_name}</p>
                 </div>
-              </Link>
+              </div>
+              // </Link>
             ))
           ) : (
             <p>Vous n'avez pas encore renseigné vos prochains rendez-vous.</p>

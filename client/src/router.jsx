@@ -75,7 +75,7 @@ const Routes = () => {
     },
     {
       path: "/appointment/:id",
-      element: <AppointmentDetailPage />
+      element: <AppointmentDetailPage />,
     },
   ];
 
