@@ -12,7 +12,11 @@ import LegalNotice from "./pages/legal/legal-notice";
 import PrivacyPolicy from "./pages/legal/privacy-policy";
 import CreatePetForm from "./pages/account/pet/create";
 import PetPage from "./pages/account/pet/index";
+import EditPetPage from "./pages/account/pet/edit";
+import CreateWeightForm from "./pages/account/pet/weight/create";
+import CreateAppointmentsForm from "./pages/account/pet/appointments/create";
 import NotFound from "./pages/404";
+import AppointmentDetailPage from "./pages/account/pet/appointments";
 
 const Routes = () => {
   const { token } = useAuth();
@@ -56,6 +60,22 @@ const Routes = () => {
     {
       path: "/pet/:id",
       element: <PetPage />,
+    },
+    {
+      path: "/pet/edit/:id",
+      element: <EditPetPage />,
+    },
+    {
+      path: "/weight/:id",
+      element: <CreateWeightForm />,
+    },
+    {
+      path: "/new-appointment/:id",
+      element: <CreateAppointmentsForm />,
+    },
+    {
+      path: "/appointment/:id",
+      element: <AppointmentDetailPage />,
     },
   ];
 

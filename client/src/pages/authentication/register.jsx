@@ -1,15 +1,23 @@
 import { Link } from "react-router-dom";
 import "./style.css";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
-export default function Register({ addError }) {
+export default function Register() {
+  const [ConditionError, setConditionError] = useState(false);
   const handleSubmit = (e) => {
     e.preventDefault();
-    const name = document.getElementById("name").value;
+    const name = document.getElementById("username").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    fetch("/api/auth/register", {
+    if (!document.getElementById("CGU").checked) {
+      return setConditionError(
+        "Veuillez accepter les conditions générales d'utilisation"
+      );
+    }
+
+    fetch(`${process.env.REACT_APP_API_URL}/auth/register`, {
       method: "POST",
       body: JSON.stringify({
         name,
@@ -21,12 +29,10 @@ export default function Register({ addError }) {
       },
     })
       .then((res) => {
-        if (res.status === 201)
-          addError("Votre compte a bien été créé, vous pouvez vous connecter.");
         return res.json();
       })
       .then((data) => {
-        if (data.message) return addError(data.message);
+        if (data.message) return console.error(data.message);
         return (window.location.href = "/login");
       })
       .catch((err) => {
@@ -39,7 +45,7 @@ export default function Register({ addError }) {
     <motion.main
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="w-full max-w-5xl"
+      className="form-center"
       exit={{ opacity: 0 }}
       transition={{
         type: "linear",
@@ -49,26 +55,52 @@ export default function Register({ addError }) {
     >
       <h1>Créer un compte</h1>
       <form method="post">
-        <legend>
-          Inscrivez-vous dès maintenant et commencez à profiter de tous les
-          avantages de notre plateforme.
-        </legend>
-        <input type="text" name="name" id="name" placeholder="Username" />
-        <input type="email" name="email" id="email" placeholder="Email" />
-        <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Password"
-        />
-        <div className="CGU">
-          <input type="checkbox" id="CGU" />
+        <div className="field required">
+          <label htmlFor="username">Nom d'utilisateur</label>
+          <input
+            type="username"
+            name="username"
+            id="username"
+            pattern=".{2,}"
+            required
+          />
+        </div>
+        <div className="field required">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            class="... invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+            required
+          />
+        </div>
+        <div className="field required">
+          <label htmlFor="password">password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            minLength={8}
+            pattern=".{7,}"
+            required
+          />
+        </div>
+        <div className="field CGU">
+          <input
+            type="checkbox"
+            id="CGU"
+            className="checkbox-rounded"
+            onChange={() => setConditionError(null)}
+          />
           <label htmlFor="CGU">
             J’accepte les{" "}
             <a href="conditions-générales-utilisation" className="primary-2">
               conditions générales d’utilisation
             </a>
           </label>
+          {ConditionError && <p className="error">{ConditionError}</p>}
         </div>
         <div className="bottom">
           <Link to="/login">

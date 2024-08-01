@@ -1,15 +1,71 @@
-$black: #333;
-$white: #E3E8F1;
-$primary-100: #FD9340;
-$primary-90: #F98A32;
-$primary-70: #FEB47A;
-$primary-50: #FDC89F;
-$primary-30: #FFDFC6;
-$primary-10: #FFF5EC;
-$BlueGray: #8696BB;
+@import "variables";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap");
 
-$padding: 24px;
+*::selection {
+  background-color: $secondary;
+  color: black;
+}
 
-$dot-size: 6px;
+html,
+body {
+  -webkit-overflow-scrolling: auto !important;
+}
 
-$grid-columns: 12;
+body {
+  font-family: "Inter", sans-serif;
+  margin: auto !important;
+  display: flex;
+  margin: 24px auto auto;
+  padding: 0 #{$padding};
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  color: $black;
+  position: relative;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  flex: 1;
+}
+
+a {
+  @include focus-outline();
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Utility classes
+
+.primary {
+  color: $primary;
+}
+
+.primary-2 {
+  color: $primary-60;
+}
+
+.white {
+  color: $white;
+}
+
+.bg-primary {
+  background-color: $primary;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+}

@@ -11,6 +11,19 @@ module.exports = (server) => {
     .post(
       authMiddleware.verifyToken,
       requestMiddleware.haveBodyContent,
-      petController.createPet
+      petController.create
     );
+
+  server
+    .route("/pets/:id")
+    .get(authMiddleware.verifyToken, petController.getAllPets)
+    .put(
+      authMiddleware.verifyToken,
+      requestMiddleware.haveBodyContent,
+      petController.update
+    );
+
+  server
+    .route("/pets/:petId")
+    .delete(authMiddleware.verifyToken, petController.delete);
 };

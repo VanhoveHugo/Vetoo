@@ -15,22 +15,27 @@ import { UserContext } from "../../../provider/user.provider";
 const CreatePetForm = ({ addError }) => {
   const navigate = useNavigate();
   const { addPet } = useContext(UserContext);
-  const [age, setAge] = useState(
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedGender, setSelectedGender] = useState("");
+  const [birthday, setBirthday] = useState(
     new Date("2000-01-01").toISOString().split("T")[0]
   );
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const name = document.getElementById("name").value;
-    const gender = document.querySelector("input[name='gender']:checked").value;
-    const type = document.querySelector("input[name='type']:checked").value;
+    const birthdate =
+      birthday === new Date("2000-01-01").toISOString().split("T")[0]
+        ? null
+        : document.getElementById("birthdate").value;
 
-    fetch("/api/pets", {
+    fetch(`${process.env.REACT_APP_API_URL}/pets`, {
       method: "POST",
       body: JSON.stringify({
         name,
-        gender,
-        type,
+        type: selectedType,
+        gender: selectedGender,
+        birthdate,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -46,17 +51,15 @@ const CreatePetForm = ({ addError }) => {
         navigate("/", { replace: true });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
-  const handleGender = (e) => {
-    // remove class from the other radio button
-    const otherRadio = document.querySelector(".radio-list input");
-    otherRadio.classList.remove("selected");
-    // add class to the selected radio button
-    const radio = e.target;
-    radio.classList.add("selected");
+  const handleKeyDown = (event, variable, value) => {
+    if (event.key === "Enter" || event.key === " ") {
+      if (variable === "type") setSelectedType(value);
+      if (variable === "gender") setSelectedGender(value);
+    }
   };
 
   return (
@@ -74,65 +77,114 @@ const CreatePetForm = ({ addError }) => {
         <h1>Créer un animal</h1>
       </div>
       <form onSubmit={handleSubmit}>
-        <div className="name">
-          <label htmlFor="name">Nom</label>
+        {/* <div className="field">
+          <label htmlFor="picture_url">Photo</label>
+          <input
+            id="picture_url"
+            name="picture_url"
+            type="file"
+            accept="image/png, image/jpeg"
+          />
+        </div> */}
+
+        <div className="field required">
+          <label htmlFor="name">Nom de l'animal</label>
           <input id="name" name="name" type="text" max={20} />
         </div>
 
-        <div className="type">
+        <div className="field required">
           <label>Espèce</label>
           <div className="radio-list">
             <div>
-              <input type="radio" name="type" id="dog" value="d"></input>
-              <label htmlFor="dog" onclick={handleGender}>
+              <input
+                type="radio"
+                name="type"
+                id="dog"
+                value="d"
+                checked={selectedType === "d"}
+                onChange={() => setSelectedType("d")}
+              />
+              <label
+                htmlFor="dog"
+                tabIndex={0}
+                onKeyDown={(e) => handleKeyDown(e, "type", "d")}
+              >
                 <FontAwesomeIcon icon={faDog} />
               </label>
             </div>
             <div>
-              <input type="radio" name="type" id="cat" value="c"></input>
-              <label htmlFor="cat" onclick={handleGender}>
+              <input
+                type="radio"
+                name="type"
+                id="cat"
+                value="c"
+                checked={selectedType === "c"}
+                onChange={() => setSelectedType("c")}
+              />
+              <label
+                htmlFor="cat"
+                tabIndex={0}
+                onKeyDown={(e) => handleKeyDown(e, "type", "c")}
+              >
                 <FontAwesomeIcon icon={faCat} />
-              </label>
-            </div>
-            <div>
-              <input type="radio" name="type" id="nac" value="n"></input>
-              <label htmlFor="nac" onclick={handleGender}>
-                NAC
               </label>
             </div>
           </div>
         </div>
 
-        <div className="gender">
+        <div className="field optional">
           <label>Genre</label>
           <div className="radio-list">
             <div>
-              <input type="radio" name="gender" id="male" value="m"></input>
-              <label htmlFor="male" onclick={handleGender}>
+              <input
+                type="radio"
+                name="gender"
+                id="male"
+                value="m"
+                checked={selectedGender === "m"}
+                onChange={() => setSelectedGender("m")}
+              ></input>
+              <label
+                htmlFor="male"
+                tabIndex={0}
+                onKeyDown={(e) => handleKeyDown(e, "gender", "m")}
+              >
                 <FontAwesomeIcon icon={faMars} />
               </label>
             </div>
             <div>
-              <input type="radio" name="gender" id="female" value="f"></input>
-              <label htmlFor="female" onclick={handleGender}>
+              <input
+                type="radio"
+                name="gender"
+                id="female"
+                value="f"
+                checked={selectedGender === "f"}
+                onChange={() => setSelectedGender("f")}
+              ></input>
+              <label
+                htmlFor="female"
+                tabIndex={0}
+                onKeyDown={(e) => handleKeyDown(e, "gender", "f")}
+              >
                 <FontAwesomeIcon icon={faVenus} />
               </label>
             </div>
           </div>
         </div>
 
-        <div className="birthday">
-          <label htmlFor="birthday">Date de naissance</label>
+        <div className="field optional">
+          <label htmlFor="birthdate">Date de naissance</label>
           <input
             type="date"
-            name="birthday"
-            id="birthday"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
+            name="birthdate"
+            id="birthdate"
+            value={birthday}
+            onChange={(e) => setBirthday(e.target.value)}
             max={new Date().toISOString().split("T")[0]}
             min="2000-01-02"
           />
         </div>
+
         <input
           className="button"
           type="submit"

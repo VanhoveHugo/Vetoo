@@ -1,0 +1,57 @@
+$black: #333;
+$white: #E3E8F1;
+
+$primary: #98714e;
+$primary-90: darken($primary, 50%);
+$primary-80: darken($primary, 37.5%);
+$primary-70: darken($primary, 25%);
+$primary-60: darken($primary, 12.5%);
+$primary-40: lighten($primary, 12.5%);
+$primary-30: lighten($primary, 25%);
+$primary-20: lighten($primary, 37.5%);
+$primary-10: lighten($primary, 50%);
+
+$secondary: #ffdc51;
+$secondary-90: darken($secondary, 50%);
+$secondary-80: darken($secondary, 37.5%);
+$secondary-70: darken($secondary, 25%);
+$secondary-60: darken($secondary, 12.5%);
+$secondary-40: lighten($secondary, 12.5%);
+$secondary-30: lighten($secondary, 25%);
+$secondary-20: lighten($secondary, 37.5%);
+$secondary-10: lighten($secondary, 50%);
+
+$gray: #8696BB;
+$gray-90: darken($gray, 50%);
+$gray-80: darken($gray, 37.5%);
+$gray-70: darken($gray, 25%);
+$gray-60: darken($gray, 12.5%);
+$gray-40: lighten($gray, 12.5%);
+$gray-30: lighten($gray, 25%);
+$gray-20: lighten($gray, 37.5%);
+$gray-10: lighten($gray, 50%);
+
+$padding: 24px;
+
+$dot-size: 6px;
+
+$grid-columns: 12;
+
+$border-radius: 8px;
+
+@mixin focus-outline() {
+  outline: 0 solid $primary;
+
+  &:focus {
+    outline: 2px solid $primary;
+    outline-offset: 4px;
+    transition: outline 50ms linear;
+  }
+}
+
+@mixin toolbar-button() {
+  @include focus-outline();
+  border-radius: $border-radius;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

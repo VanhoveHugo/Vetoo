@@ -1,41 +1,60 @@
 version: "3"
-name: vetoo
+
 services:
-  nginx:
-    build: ./nginx
-    depends_on:
-      - backend
-      - frontend
-      - database
-    restart: always
+  traefik:
+    image: traefik:v2.5
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
     ports:
       - "80:80"
+      - "443:443"
+      - "8080:8080"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d/
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
 
   backend:
     build: ./api
+    restart: always
     depends_on:
       - database
     volumes:
       - ./api/src:/app/src
       - ./.env:/app/.env
-    ports:
-      - "3001:80"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.services.backend.loadbalancer.server.port=3001"
 
   frontend:
     build: ./client
     volumes:
       - ./client/src:/app/src
       - ./client/public:/app/public
-    ports:
-      - "3000:3000"
+      - ./.env:/app/.env
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`app.localhost`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
 
   database:
-    platform: linux/x86_64
     image: mysql:5.7
-    ports:
-      - "3306:3306"
+    restart: always
     env_file:
       - .env
     environment:
@@ -46,12 +65,22 @@ services:
     volumes:
       - ./mysql:/docker-entrypoint-initdb.d
       - ./mysql/data:/var/lib/mysql
+    networks:
+      - web
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     depends_on:
       - database
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - web
     ports:
-      - "8080:80"
-    env_file:
-      - .env
+      - "8081:80"
+
+networks:
+  web:
+    external: false

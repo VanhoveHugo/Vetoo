@@ -1,10 +1,39 @@
+.form-center {
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  margin: 2rem auto;
+}
+.form-center h1 {
+  font-size: 40px;
+  font-weight: 600;
+  margin: 0 0 2rem;
+}
+
 .bottom {
   position: fixed;
   bottom: 2rem;
   left: 2rem;
   right: 2rem;
 }
+.bottom a {
+  font-weight: 600;
+  font-size: 14px;
+}
+.bottom input {
+  margin: 25px 0 0;
+}
 
+@media (min-width: 480px) {
+  .bottom {
+    position: relative;
+    margin-top: 1rem;
+    top: initial;
+    bottom: initial;
+    left: initial;
+    right: initial;
+  }
+}
 h1 {
   display: inline-block;
   font-weight: 600;
@@ -12,16 +41,32 @@ h1 {
   margin: 0 0 1rem;
 }
 
-.CGU {
-  display: flex;
+.field.CGU {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
 }
-.CGU input {
-  margin-right: 14px;
-}
-.CGU label {
+.field.CGU label {
   font-size: 12px;
   flex-direction: row;
 }
-.CGU label a {
+.field.CGU label a {
   margin-left: 0.25rem;
+}
+.field.CGU .error {
+  bottom: -25px;
+}
+
+.field {
+  position: relative;
+}
+.field .error {
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+}
+
+.error {
+  font-size: 12px;
+  color: red;
 }/*# sourceMappingURL=style.css.map */

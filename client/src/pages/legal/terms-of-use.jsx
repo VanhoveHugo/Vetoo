@@ -5,10 +5,12 @@ export default function TermsOfUse() {
   return (
     <main>
       <Helmet>
-        <title>Conditions Générales d'Utilisation - Vetoo</title>
+        <title>
+          Conditions Générales d'Utilisation - Mon Espace Santé Animale
+        </title>
         <meta
           name="description"
-          content="Consultez les Conditions Générales d'Utilisation de Vetoo."
+          content="Consultez les Conditions Générales d'Utilisation de Mon Espace Santé Animale."
         />
       </Helmet>
       <header>
@@ -21,9 +23,9 @@ export default function TermsOfUse() {
       <section id="introduction">
         <h2>Introduction</h2>
         <p>
-          Bienvenue sur Vetoo ! En utilisant notre application, vous acceptez
-          les présentes Conditions Générales d'Utilisation (CGU). Veuillez les
-          lire attentivement.
+          Bienvenue sur Mon Espace Santé Animale ! En utilisant notre
+          application, vous acceptez les présentes Conditions Générales
+          d'Utilisation (CGU). Veuillez les lire attentivement.
         </p>
       </section>
 
@@ -66,8 +68,9 @@ export default function TermsOfUse() {
       <section id="responsabilite">
         <h2>Responsabilité</h2>
         <p>
-          Vetoo ne pourra être tenu responsable des dommages indirects résultant
-          de l'utilisation ou de l'incapacité à utiliser notre service.
+          Mon Espace Santé Animale ne pourra être tenu responsable des dommages
+          indirects résultant de l'utilisation ou de l'incapacité à utiliser
+          notre service.
         </p>
       </section>
 
@@ -99,7 +102,7 @@ export default function TermsOfUse() {
       </section>
 
       <footer>
-        <p>&copy; 2024 Vetoo. Tous droits réservés.</p>
+        <p>&copy; 2024 Mon Espace Santé Animale. Tous droits réservés.</p>
       </footer>
     </main>
   );

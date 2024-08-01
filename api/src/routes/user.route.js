@@ -16,9 +16,8 @@ module.exports = (server) => {
   /**
    * Handle Users
    */
-  server.route("/users").get(userController.getAllUsers);
-
-  server.route("/users/:userId").get(userController.getUserById);
+  // server.route("/users").get(userController.getAllUsers);
+  // server.route("/users/:userId").get(userController.getUserById);
 
   /**
    * Handle Account
