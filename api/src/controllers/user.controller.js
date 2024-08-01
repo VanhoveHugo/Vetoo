@@ -35,13 +35,13 @@ exports.register = (req, res) => {
 
     User.create(req.body, (err, user) => {
       if (err) {
-        return res.status(500).json({ message: "Erreur serveur." });
+        return res.status(500).json({ message: err });
       }
       return res.json(user);
     });
   } catch (error) {
     console.error("Unexpected error:", error.message);
-    return res.status(500).json({ message: "Erreur serveur." });
+    return res.status(500).json({ message: error });
   }
 };
 
@@ -101,7 +101,7 @@ exports.login = (req, res) => {
     user.password = undefined;
 
     Pet.findByUserId(user.id, (err, pets) => {
-      if (err) return res.status(500).json({ message: "Erreur serveur." });
+      if (err) return res.status(500).json({ message: err });
       user.pets = pets;
       return res.json({ user, token });
     });
@@ -113,14 +113,14 @@ exports.login = (req, res) => {
  */
 exports.getAllUsers = (req, res) => {
   User.all((err, users) => {
-    if (err) return res.status(500).json({ message: "Erreur serveur." });
+    if (err) return res.status(500).json({ message: err });
     return res.json(users);
   });
 };
 
 exports.getUserById = (req, res) => {
   User.findById(req.params.userId, (err, user) => {
-    if (err) return res.status(500).json({ message: "Erreur serveur." });
+    if (err) return res.status(500).json({ message: err });
     if (!user)
       return res.status(404).json({ message: "Utilisateur non trouvé." });
     return res.json(user);

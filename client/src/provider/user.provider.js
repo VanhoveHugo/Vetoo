@@ -52,6 +52,7 @@ const UserContextProvider = ({ children }) => {
       setUser(JSON.parse(storedUser));
       setIsFetched(true);
     } else {
+      if (!localStorage.getItem("token")) return
       const fetchData = async () => {
         try {
           fetch(`${process.env.REACT_APP_API_URL}/account`, {
